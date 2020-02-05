@@ -11,23 +11,23 @@ from torch.utils.data import DataLoader
 parser = argparse.ArgumentParser()
 # dataset option
 parser.add_argument('--train_truth_dir', default=r'./data/output_9(1-700)')
-parser.add_argument('--train_input_dir', default=r'F:\PythonLab\SIM_pics\train\trainA')
-parser.add_argument('--val_truth_dir', default=r'F:\PythonLab\SIM_pics\val\valB')
-parser.add_argument('--val_input_dir', default=r'F:\PythonLab\SIM_pics\val\valA')
-parser.add_argument('--checkpoint_dir', default='checkpoints/', help='checkpoint dir of model params')
-parser.add_argument('--stat_dir', type=str, default='statistics/', help='statistics dir')
+parser.add_argument('--train_input_dir', default=r'./data/')
+parser.add_argument('--val_truth_dir', default=r'./data/')
+parser.add_argument('--val_input_dir', default=r'./data/')
+parser.add_argument('--checkpoint_dir', default='checkpoints/')
+parser.add_argument('--stat_dir', type=str, default='statistics/')
 # model option
-parser.add_argument('--im_size', type=int, default=256, help='size of image')
+parser.add_argument('--im_size', type=int, default=256)
 parser.add_argument('--model', type=str, default='vdsr')
-parser.add_argument('--input_nc', type=int, default=1, help='input image channels: 3 for RGB and 1 for grayscale')
-parser.add_argument('--output_nc', type=int, default=9, help='output image channels: 3 for RGB and 1 for grayscale')
+parser.add_argument('--input_nc', type=int, default=1)
+parser.add_argument('--output_nc', type=int, default=9)
 # other option
 parser.add_argument('--batch_size', type=int, default=16, help='input batch size')
 parser.add_argument('--start_epoch', type=int, default=0, help='strat epoch')
 parser.add_argument('--epoch', type=int, default=500, help='total epoch')
 parser.add_argument('--lr', type=float, default=1e-2, help='learning rate')
 parser.add_argument('--suffix', type=str, default='9ch', help='expriment name')
-parser.add_argument('--device', type=str, default='cuda:0', help='')
+parser.add_argument('--device', type=str, default='cuda:0', help='gpu name')
 # define opt
 opt = parser.parse_args()
 
