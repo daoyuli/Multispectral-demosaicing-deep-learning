@@ -14,8 +14,8 @@ class dataset(Dataset):
         self.truth_filenames = [join(truth_dir, x) for x in listdir(truth_dir)]
 
     def __getitem__(self, index):
-        input = sio.loadmat(self.input_filenames)['meas']
-        truth = sio.loadmat(self.truth_filenames)['orig_subscene']
+        input = sio.loadmat(self.input_filenames[index])['meas']
+        truth = sio.loadmat(self.truth_filenames[index])['orig_subscene']
         input_t = torch.from_numpy(input.astype('float32')).unsqueeze(0)
         truth_n = np.zeros((truth.shape[-1], truth.shape[0], truth.shape[1]))
         for it in range(truth.shape[-1]):
@@ -29,8 +29,8 @@ class dataset(Dataset):
 
 if __name__ == "__main__":
     from matplotlib import pyplot as plt
-    input = sio.loadmat('./data/MosaicScene_1.mat')['meas']
-    truth = sio.loadmat('./data/OrigScene_1.mat')['orig_subscene']
+    input = sio.loadmat('./data/input_9/MosaicScene_9channels_1.mat')['meas']
+    truth = sio.loadmat('./data/output_9/OrigScene_9channels_1.mat')['orig_subscene']
     plt.imshow(input, 'gray')
     plt.show()
     input_t = torch.from_numpy(input.astype('float32')).unsqueeze(0)

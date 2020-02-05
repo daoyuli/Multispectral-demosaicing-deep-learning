@@ -10,8 +10,8 @@ from torch.utils.data import DataLoader
 
 parser = argparse.ArgumentParser()
 # dataset option
-parser.add_argument('--train_truth_dir', default=r'./data/output_9(1-700)')
-parser.add_argument('--train_input_dir', default=r'./data/')
+parser.add_argument('--train_truth_dir', default=r'./data/output_9')
+parser.add_argument('--train_input_dir', default=r'./data/input_9')
 parser.add_argument('--val_truth_dir', default=r'./data/')
 parser.add_argument('--val_input_dir', default=r'./data/')
 parser.add_argument('--checkpoint_dir', default='checkpoints/')
@@ -22,7 +22,7 @@ parser.add_argument('--model', type=str, default='vdsr')
 parser.add_argument('--input_nc', type=int, default=1)
 parser.add_argument('--output_nc', type=int, default=9)
 # other option
-parser.add_argument('--batch_size', type=int, default=16, help='input batch size')
+parser.add_argument('--batch_size', type=int, default=4, help='input batch size')
 parser.add_argument('--start_epoch', type=int, default=0, help='strat epoch')
 parser.add_argument('--epoch', type=int, default=500, help='total epoch')
 parser.add_argument('--lr', type=float, default=1e-2, help='learning rate')
@@ -32,12 +32,8 @@ parser.add_argument('--device', type=str, default='cuda:0', help='gpu name')
 opt = parser.parse_args()
 
 device = torch.device(opt.device)
-model = vdsr.Net(opt)
-if torch.cuda.device_count() > 1:
-    model = nn.DataParallel(model, device_ids=[0, 1])
-else:
-    model = nn.DataParallel(model, device_ids=[0])
-model.to(device)
+model = vdsr.Net(opt).to(device)
+
 if opt.start_epoch > 0:
     model.load_state_dict(torch.load(opt.checkpoint_dir + '%s_epoch_%d_%s.pkl'
                                      % (opt.model, opt.start_epoch, opt.suffix)))
@@ -61,7 +57,6 @@ for epoch in range(opt.epoch-opt.start_epoch):
     epoch_true = epoch + opt.start_epoch + 1
     # train model
     model.train()
-    scheduler.step()
 
     p_loss = 0
     pic_num = 0
@@ -101,6 +96,8 @@ for epoch in range(opt.epoch-opt.start_epoch):
     )
     data_frame.to_csv(opt.stat_dir + 'train_results.csv', index_label='Epoch')
 
+    scheduler.step()
+"""
     # val model
     p_loss_val = 0
     pic_num_val = 0
@@ -125,3 +122,4 @@ for epoch in range(opt.epoch-opt.start_epoch):
         index=range(opt.start_epoch+1, epoch_true+1)
     )
     data_frame_val.to_csv(opt.stat_dir + opt.model + 'val_results.csv', index_label='Epoch')
+"""

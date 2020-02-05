@@ -35,7 +35,7 @@ test_data_loader = DataLoader(test_dataset, batch_size=1, shuffle=False)
 total_pl = 0
 pic_num = 0
 model.eval()
-print('test results of %s_%s_epoch_%s' %(opt.model, opt.test_epoch, opt.suffix))
+print('test results of %s_%s_epoch_%s' % (opt.model, opt.test_epoch, opt.suffix))
 for iter, test_data in enumerate(test_data_loader):
     input, truth = test_data
     input, truth = Variable(input, requires_grad=False).cuda(), Variable(truth, requires_grad=False).cuda()
@@ -58,4 +58,4 @@ for iter, test_data in enumerate(test_data_loader):
     total_pl += pixel_loss.data.item()
 
 test_pl = total_pl/pic_num
-print('average pixel loss: %.4f' %(test_pl))
+print('average pixel loss: %.4f' % test_pl)
