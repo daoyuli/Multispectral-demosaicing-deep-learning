@@ -20,7 +20,7 @@ parser.add_argument('--input_nc', type=int, default=1)
 parser.add_argument('--output_nc', type=int, default=9)
 parser.add_argument('--suffix', type=str, default='9ch')
 # other option
-parser.add_argument('--test_epoch', type=int, default=25, help='test epoch')
+parser.add_argument('--test_epoch', type=int, default=130, help='test epoch')
 parser.add_argument('--device', type=str, default='cuda:0', help='gpu name')
 # define opt
 opt = parser.parse_args()
@@ -46,8 +46,8 @@ for iter, test_data in enumerate(test_data_loader):
     pred = model(input)
 
     path = opt.result_dir + str(iter)
-    pred_np = pred.detach().cpu().numpy()
-    sio.savemat(path, {'name': pred_np})
+    pred_np = pred.detach().cpu()[0, :, :, :].numpy()
+    sio.savemat(path, {'test': pred_np})
 
     pixel_loss = MSELoss(pred, truth)
     print('image no.%d, mse loss is %.3f' % (iter, pixel_loss))
