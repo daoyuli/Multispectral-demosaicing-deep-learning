@@ -25,7 +25,7 @@ parser.add_argument('--output_nc', type=int, default=9)
 parser.add_argument('--batch_size', type=int, default=4, help='input batch size')
 parser.add_argument('--start_epoch', type=int, default=0, help='strat epoch')
 parser.add_argument('--epoch', type=int, default=500, help='total epoch')
-parser.add_argument('--lr', type=float, default=1e-2, help='learning rate')
+parser.add_argument('--lr', type=float, default=2e-4, help='learning rate')
 parser.add_argument('--suffix', type=str, default='9ch', help='expriment name')
 parser.add_argument('--device', type=str, default='cuda:0', help='gpu name')
 # define opt
@@ -39,7 +39,7 @@ if opt.start_epoch > 0:
                                      % (opt.model, opt.start_epoch, opt.suffix)))
 print('# network parameters:', sum(param.numel() for param in model.parameters()))
 
-optimizer = torch.optim.Adam(model.parameters(), lr=opt.lr)
+optimizer = torch.optim.Adam(model.parameters(), lr=opt.lr, weight_decay=1e-5)
 scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, factor=0.1, patience=10, verbose=True, min_lr=1e-5)
 # MAELoss = torch.nn.L1Loss()
 MSELoss = torch.nn.MSELoss()
@@ -96,7 +96,7 @@ for epoch in range(opt.epoch-opt.start_epoch):
     )
     data_frame.to_csv(opt.stat_dir + 'train_results.csv', index_label='Epoch')
 
-    scheduler.step()
+    scheduler.step(loss)
 """
     # val model
     p_loss_val = 0

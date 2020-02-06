@@ -5,13 +5,14 @@ from model import vdsr
 from data_utils import dataset
 from torch.autograd import Variable
 from torch.utils.data import DataLoader
-from torchvision.transforms import ToPILImage
+import scipy.io as sio
 
 parser = argparse.ArgumentParser()
 # dataset option
-parser.add_argument('--test_truth_dir', default=r'E:\LDY\SIM_pics\test\testB')
-parser.add_argument('--test_input_dir', default=r'E:\LDY\SIM_pics\test\testA')
+parser.add_argument('--test_truth_dir', default=r'./data/test_output')
+parser.add_argument('--test_input_dir', default=r'./data/test_input')
 parser.add_argument('--checkpoint_dir', default='checkpoints/')
+parser.add_argument('--result_dir', default='result/')
 # model option
 parser.add_argument('--im_size', type=int, default=256)
 parser.add_argument('--model', type=str, default='vdsr')
@@ -24,7 +25,7 @@ parser.add_argument('--device', type=str, default='cuda:0', help='gpu name')
 # define opt
 opt = parser.parse_args()
 
-model = vdsr.vdsr(opt).cuda()
+model = vdsr.Net(opt).cuda()
 model.load_state_dict(torch.load(opt.checkpoint_dir + '%s_epoch_%d_%s.pkl'
                                  % (opt.model, opt.test_epoch, opt.suffix)))
 MSELoss = torch.nn.MSELoss()
@@ -44,18 +45,9 @@ for iter, test_data in enumerate(test_data_loader):
 
     pred = model(input)
 
+    path = opt.result_dir + str(iter)
+    pred_np = pred.detach().cpu().numpy()
+    sio.savemat(path, {'name': pred_np})
+
     pixel_loss = MSELoss(pred, truth)
-    PSNR = 10*np.log10(1/pixel_loss.data.item())
-
-    print('pic no.%d PSNR: %.4f' % (pic_num, PSNR))
-
-    img_name = str(pic_num)
-    out_img = ToPILImage()(pred[0].data.cpu())
-    out_img.save('test_pics/'+img_name+'pred.png')
-    truth_img = ToPILImage()(truth[0].data.cpu())
-    truth_img.save('test_pics/'+img_name+'truth.png')
-
-    total_pl += pixel_loss.data.item()
-
-test_pl = total_pl/pic_num
-print('average pixel loss: %.4f' % test_pl)
+    print('image no.%d, mse loss is %.3f' % (iter, pixel_loss))
