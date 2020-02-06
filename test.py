@@ -20,7 +20,7 @@ parser.add_argument('--input_nc', type=int, default=1)
 parser.add_argument('--output_nc', type=int, default=9)
 parser.add_argument('--suffix', type=str, default='9ch')
 # other option
-parser.add_argument('--test_epoch', type=int, default=130, help='test epoch')
+parser.add_argument('--test_epoch', type=int, default=45, help='test epoch')
 parser.add_argument('--device', type=str, default='cuda:0', help='gpu name')
 # define opt
 opt = parser.parse_args()
